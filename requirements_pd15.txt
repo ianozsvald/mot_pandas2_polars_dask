@@ -1,0 +1,7 @@
+pandas==1.5.3
+jupyterlab
+matplotlib
+bottleneck
+numexpr
+ydata_profiling
+ipywidgets

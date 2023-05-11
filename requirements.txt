@@ -1,0 +1,12 @@
+pandas
+jupyterlab
+matplotlib
+polars
+memory_profiler
+ipython_memory_usage
+scalene
+bottleneck
+numexpr
+pyarrow
+memory_profiler
+ipython_memory_profiler
