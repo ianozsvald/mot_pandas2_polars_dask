@@ -1,4 +1,14 @@
 
+# Notebooks
+
+## `20230509_0|1_explore`
+
+TODO get insights noted...
+
+## `20230503_explore_ydataprofiling`
+
+Use `ydata-profiling` to make unidimensional dumps of data from 2021 for several csv files. 
+
 # DVLA data and documentation
 
 ## DVLA data sources

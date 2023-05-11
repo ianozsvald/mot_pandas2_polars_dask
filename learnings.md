@@ -1,3 +1,13 @@
+# Questions we might ask
+
+* What's the mileage given first-use date?
+* What's the mileage grouped by fuel and manufacturer?
+* What's the valuecounts for mileages?
+
+# Data
+
+* possibly there's a relationship between fuel type and mileage (suggested by pandas profiling)
+
 # polars
 
 polars notes
