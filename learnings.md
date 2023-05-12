@@ -8,6 +8,12 @@
 
 * possibly there's a relationship between fuel type and mileage (suggested by pandas profiling)
 
+"Vehicles that have an unknown date of manufacture are allocated a first use date of 01/01/1971 by the DVLA. As a result of this, data for 1971 will show anomalies. "
+
+NT normal test, RT retest, PL PV partial 
+
+test_class_id 4 for cars, 7 for trucks, 1-2 bikes, 3 private passenger cars. 0 means pre-computeratisation.
+
 # polars
 
 polars notes

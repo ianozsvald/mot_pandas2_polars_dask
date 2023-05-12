@@ -1,6 +1,14 @@
 
 # Notebooks
 
+## `20230511_pd_load_many`
+
+Load in all the files for one year (e.g. 2021), using pandas, after loading convert to categorical and datetimes, then plot a subsample of mileage vs first use year
+
+Observe that loading many files with pandas from csv is slow and takes circa 8GB 45s, then the concat is very slow 13GB total 30s, categorisation 15s, 400M rows, converting two date cols takes 15s each, pandera checks take 40s, 
+
+In 2021 `df.query('vehicle_id==223981155')` shows 633 rows with DVSA as the model, beige vehicles. Maybe a test vehicle?
+
 ## `20230509_0|1_explore`
 
 TODO get insights noted...
