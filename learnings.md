@@ -1,8 +1,12 @@
 # Questions we might ask
 
-* What's the mileage given first-use date?
+* What's the mileage given first-use date? DONE PD
+* What's the mileage given cylinder capacity for petrol or diesel?
 * What's the mileage grouped by fuel and manufacturer?
 * What's the valuecounts for mileages?
+* which test centres have the most weird results e.g. missing mileage or cylinders or STeam fuel?
+* Does petrol/diesel/hybrid/electric distribution change over time?
+* can we predict mileage given fuel, first use date, vehicle class? test conversion to numpy format
 
 # Data
 
@@ -13,6 +17,8 @@
 NT normal test, RT retest, PL PV partial 
 
 test_class_id 4 for cars, 7 for trucks, 1-2 bikes, 3 private passenger cars. 0 means pre-computeratisation.
+
+2021 data includes likeamobile steam carriage, LYKAMOBILE 	OPEN TOP CARRIGE  https://www.youtube.com/watch?v=8nHo3NGqrlA
 
 # polars
 
