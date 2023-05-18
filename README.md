@@ -8,7 +8,7 @@ Load in all the files for one year (e.g. 2021), using pandas, after loading conv
 Observe that loading many files with pandas from csv is slow and takes circa 8GB 45s, then the concat is very slow 13GB total 30s, categorisation 15s, 400M rows, converting two date cols takes 15s each, pandera checks take 40s, 
 
 In 2021 `df.query('vehicle_id==223981155')` shows 633 rows with DVSA as the model, beige vehicles. Maybe a test vehicle?
-
+ 
 ## `20230509_0|1_explore`
 
 TODO get insights noted...
@@ -40,12 +40,28 @@ Other docs:
 
 # Environment setup
 
+## Main investigation
+
 The `pydatalondon2023` environment is for the main investigation including Pandas 2, Polars and Dask.
 
 ```
 $ conda create -n pydatalondon2023 python=3.11
+NOTE read https://github.com/andrix/python-snappy to install OS libraries (e.g. Ian `sudo apt install libsnappy-dev`)
 pip install -r requirements.txt
+# Dask optionals FYI: https://docs.dask.org/en/stable/install.html#optional-dependencies
 ```
+
+From root (where README is) run:
+
+```
+mot_pandas2_polars_dask$ python scripts/1_link_scraper.py 
+# makes a ./data/ folder with 2 csv file
+mot_pandas2_polars_dask$ bash scripts/2_acquire_data.sh 
+# downloads all zip/tar.gz files, might take an hour or so...
+???
+```
+
+## ydata-profiling secondary investigation
 
 The `pydatalondon2023_pd15` environment is for Pandas Profiling which needs Pandas 1.5:
 
