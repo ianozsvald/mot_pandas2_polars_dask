@@ -1,11 +1,13 @@
 # Questions we might ask
 
-* What's the mileage given first-use date? DONE PD
-* What's the mileage given cylinder capacity for petrol or diesel?
-* What's the mileage grouped by fuel and manufacturer?
+* What's the mileage given first-use date? DONE PD for 2021
+* What's the mileage given first-use date? DO for 2007 and compare - does mileage seem to change?
 * What's the valuecounts for mileages?
-* which test centres have the most weird results e.g. missing mileage or cylinders or STeam fuel?
 * Does petrol/diesel/hybrid/electric distribution change over time?
+  * groupby fuel, count for 2007, 2021 - different counts?
+* What's the mileage given cylinder capacity for petrol or diesel for e.g. 2010 registered cars?
+* What's the mileage grouped by fuel and manufacturer?
+* which test centres have the most weird results e.g. missing mileage or cylinders or STeam fuel?
 * can we predict mileage given fuel, first use date, vehicle class? test conversion to numpy format
 
 # Data

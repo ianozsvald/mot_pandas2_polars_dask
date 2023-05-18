@@ -9,4 +9,4 @@ bottleneck
 numexpr
 pyarrow
 memory_profiler
-ipython_memory_profiler
+#ipython_memory_profiler
