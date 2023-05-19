@@ -8,6 +8,13 @@ dfs = pd.read_html(
     extract_links="body",
 )
 
+import os
+print("Making a data folder locally")
+try:
+    os.mkdir('data')
+except FileExistsError:
+    pass # no need to make folder a second time
+
 data_links_df = pd.DataFrame.from_records(
     dfs[0]["Link to the data"], columns=["text", "link"]
 ).sort_values(by="text", ignore_index=True)

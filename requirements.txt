@@ -1,7 +1,8 @@
 bokeh
 black
 bottleneck
-dask
+dask[complete]
+python-snappy
 distributed
 ipython_memory_usage
 ipywidgets
@@ -14,5 +15,4 @@ notebook
 numexpr
 pandas
 polars
-pyarrow
 scalene

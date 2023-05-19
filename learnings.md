@@ -52,6 +52,8 @@ https://pola-rs.github.io/polars-book/user-guide/expressions/numpy/#interoperabi
 
 streaming would mean reading from e.g. a csv file that's too big for ram - but no docs yet
 
+polars sort uses `descending` but pandas uses `ascending` dfp.select('test_class_id').to_series().value_counts().sort(by='counts', descending=True)
+
 
 scikit learn
 https://github.com/scikit-learn/scikit-learn/issues/25896
