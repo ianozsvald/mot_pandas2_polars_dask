@@ -60,7 +60,8 @@ mot_pandas2_polars_dask$ python scripts/1_link_scraper.py
 mot_pandas2_polars_dask$ bash scripts/2_acquire_data.sh 
 # downloads all zip/tar.gz files, it took 2 hours for Ian leaving 41 files in total in ./data/
 mot_pandas2_polars_dask$ bash scripts/3_decompress_data.sh # giving 66 files in ./data/
-# run dask.ipynb
+# run convert_csv_to_parquet_with_dask.ipynb
+# it generates ./test_result.parquet and ./item.parquet
 
 ```
 
