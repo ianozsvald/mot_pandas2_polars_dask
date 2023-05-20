@@ -8,6 +8,7 @@ ipython_memory_usage
 ipywidgets
 isort
 jupyterlab
+jupytext
 lxml
 matplotlib
 memory_profiler
