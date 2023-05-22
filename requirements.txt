@@ -16,3 +16,6 @@ numexpr
 pandas
 polars
 scalene
+scikit-learn
+lightgbm
+

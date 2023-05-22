@@ -1,6 +1,16 @@
 
 # Notebooks
 
+## `20230521_sklearn_expt`
+
+It seems that a Polars 2D float array (PyArrow) can be read by sklearn's LR, RF, SVC and LightGBM.
+
+## `subselect_all_tests_to_few_years_polars` (in root)
+
+Polars scan on full results dataset, export a 2021+ 82M row and 2018+ 198M row dataset as new Parquet files.
+
+`f"{pl.scan_parquet(new_path).select(pl.count()).collect().item():,} rows"` count rows.
+
 ## `20230511_pd_load_many`
 
 Load in all the files for one year (e.g. 2021), using pandas, after loading convert to categorical and datetimes, then plot a subsample of mileage vs first use year
@@ -62,6 +72,8 @@ mot_pandas2_polars_dask$ bash scripts/2_acquire_data.sh
 mot_pandas2_polars_dask$ bash scripts/3_decompress_data.sh # giving 66 files in ./data/
 # run convert_csv_to_parquet_with_dask.ipynb
 # it generates ./test_result.parquet and ./item.parquet
+# run subselect_all_tests_to_few_years_polars.ipynb
+# which generates ./test_result_2021on.parquet
 
 ```
 

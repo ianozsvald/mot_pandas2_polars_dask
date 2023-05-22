@@ -54,6 +54,12 @@ streaming would mean reading from e.g. a csv file that's too big for ram - but n
 
 polars sort uses `descending` but pandas uses `ascending` dfp.select('test_class_id').to_series().value_counts().sort(by='counts', descending=True)
 
+lazyframe filter then sink_parquet
+dataframe filter then write_parquet
+
+lazyframe read limit and head seem to read all
+lazyframe count (?) not shape to get rows, dataframe has shape, ldf seems to want .fetch
+
 
 scikit learn
 https://github.com/scikit-learn/scikit-learn/issues/25896
