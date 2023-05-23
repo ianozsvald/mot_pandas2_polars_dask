@@ -22,10 +22,7 @@ spark = SparkSession \
     .appName("Python Spark SQL basic example") \
     .getOrCreate()
 
-df = (spark.read
-      .options(datetimeRebaseMode="LEGACY")
-      .parquet('test_result.parquet')
-     )
+df = spark.read.options(datetimeRebaseMode="LEGACY").parquet('test_result.parquet')
 df.dtypes
 
 df.limit(10).show()
