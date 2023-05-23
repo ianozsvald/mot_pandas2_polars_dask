@@ -54,6 +54,8 @@ streaming would mean reading from e.g. a csv file that's too big for ram - but n
 
 polars sort uses `descending` but pandas uses `ascending` dfp.select('test_class_id').to_series().value_counts().sort(by='counts', descending=True)
 
+dayof week counts from 0 in pandas, 1 in polars https://arrow.apache.org/docs/python/generated/pyarrow.compute.day_of_week.html
+
 lazyframe filter then sink_parquet
 dataframe filter then write_parquet
 
@@ -75,3 +77,19 @@ READ:
 
 * https://pola-rs.github.io/polars-book/user-guide/migration/pandas/#selecting-data (pandas migration)
 * https://pola-rs.github.io/polars-book/user-guide/expressions/user-defined-functions/#to-map-or-to-apply map/apply
+
+# ISSUES Opened
+
+## Polars
+
+* https://github.com/pola-rs/polars/issues/8933 I want value_counts on lazyframe
+  * "The groupby().agg(pl.count()) version should be preferred as that would hit the heavily optimized groupby branches. Whereas the value_counts expression can be used in any context and together with other expressions so we have to be more conservative with taking resources on that one." maybe another angle to explore?
+
+* https://github.com/pola-rs/polars/issues/8925 high swap usage on read_parquet
+  * notes "But this time just point polars to the directory path and pyarrow would grab the files., Set memory_map to False.", "parallel=False to load in sequence" so maybe it is worth trying these
+
+
+
+## Dask
+
+* https://github.com/dask/dask/issues/10302 write_paths argument makes categorical on a pyarrow df

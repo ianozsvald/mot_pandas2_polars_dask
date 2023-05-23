@@ -1,6 +1,8 @@
-./data
-./item.parquet
-./test_result.parquet
+data
+item.parquet
+test_result.parquet
+test_result_2018on.parquet
+test_result_2021on.parquet
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

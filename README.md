@@ -1,6 +1,10 @@
 
 # Notebooks
 
+## `20230522_pandas_exploration`
+
+EMPTY
+
 ## `20230521_sklearn_expt`
 
 It seems that a Polars 2D float array (PyArrow) can be read by sklearn's LR, RF, SVC and LightGBM.
@@ -10,6 +14,14 @@ It seems that a Polars 2D float array (PyArrow) can be read by sklearn's LR, RF,
 Polars scan on full results dataset, export a 2021+ 82M row and 2018+ 198M row dataset as new Parquet files.
 
 `f"{pl.scan_parquet(new_path).select(pl.count()).collect().item():,} rows"` count rows.
+
+## `20230520_polars_queries`
+
+Read 1 parquet file, passes vs failures on dt.day
+
+## `20230519_polars_parquet`
+
+Scratch notebook, trying to load many rows (e.g. 300M) into memory directly
 
 ## `20230511_pd_load_many`
 
