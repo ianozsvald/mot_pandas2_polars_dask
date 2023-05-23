@@ -75,12 +75,14 @@ pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
 # %%time
 # OOM
 # pl.scan_parquet(scan_path).limit(5).collect(streaming=True)
+
 # %%time
 # OOM
 # pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect()
+
 # ## OOM errors with scan_parquet > limit > collect
-#
-# I'm getting to grips with Polars, working towards a talk with @ian, using the UK MOT vehicle test dataset (~635m rows, 854 partitions on disk).
+
+# I'm getting to grips with Polars, working towards a talk with @ianozsvald, using the UK MOT vehicle test dataset (~635m rows, 854 partitions on disk, dataset explained [here](https://github.com/pola-rs/polars/issues/8925)).
 #
 # When prototyping code with Pandas, Dask or PySpark I would often use `.head()` or `.limit()`,
 # in order to eyeball data at different stages in a method chained process.
@@ -118,6 +120,8 @@ pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
 # * Why does scanning n_rows larger than my dataset prevent OOM error in conjunction with `streaming=True` ?
 # * Are there any plans for a `use_pyarrow` option to `scan_parquet`, as with `read_parquet`?
 #
-# I have discovered `LazyFrame.fetch()` and can see how that would be useful.
+# I have discovered `LazyFrame.fetch()` and can see how that would be useful. I'm also aware that `df.limit` is an alias to `df.head`.
+
+pl.show_versions()
 
 
