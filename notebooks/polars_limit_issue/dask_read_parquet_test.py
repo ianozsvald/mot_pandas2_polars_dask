@@ -13,21 +13,8 @@
 #     name: python3
 # ---
 
-import polars as pl
+import dask.dataframe as dd
 
-# +
-# df = pl.read_parquet('test_result.parquet/*.parquet')
-# -
-
-lf = pl.scan_parquet('test_result_pyspark.parquet/*.parquet')
-lf.dtypes
-
-lf = pl.scan_parquet('test_result.parquet/*.parquet')
-lf.dtypes
-
-lf.limit(10)
-
-df = lf.limit(10).collect()
-df
+dd.read_parquet('../../test_result.parquet/', engine='pyarrow').head(10)
 
 
