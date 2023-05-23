@@ -17,6 +17,7 @@ numexpr
 pandas
 polars
 scalene
+humanfriendly
 scikit-learn
 lightgbm
 

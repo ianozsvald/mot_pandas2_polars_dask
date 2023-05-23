@@ -1,7 +1,11 @@
 
-# Notebooks
+# `experiments/`
 
 ## `20230522_pandas_exploration`
+
+* Pandas read_parquet 2021on as parquet costs 82M rows, 11GB and 7s 
+* Pandas read_parquet 2021on as numpy nullable costs 82M rows 39GB and 27s 
+* Pandas read_parquet 2018on as parquet costs 198M rows, 27GB 30s
 
 EMPTY
 

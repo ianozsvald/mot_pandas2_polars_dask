@@ -1,3 +1,4 @@
+*.swp
 data
 item.parquet
 test_result.parquet
