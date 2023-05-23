@@ -14,100 +14,114 @@
 # ---
 
 import polars as pl
-import pandas as pd
 
-# +
-# df = pl.read_parquet('test_result.parquet/*.parquet')
-# -
+# 635m row dataset
+scan_path = '../../test_result.parquet/*.parquet'
 
-lf = pl.scan_parquet('test_result.parquet/*.parquet', n_rows=100)
-lf.dtypes
+# ## Eager
 
-lazyhead = lf.head(10)
-lazyhead.show_graph()
+df = pl.read_parquet(scan_path, n_rows=1000)
+df.limit(5)
 
-lazyhead.collect()
+df = pl.read_parquet('../../test_result.parquet/part.0.parquet', use_pyarrow=True)
+df.limit(5)
 
-lazylimit = lf.limit(10)
-lazylimit.show_graph()
+df.schema
 
-pl.scan_parquet('test_result.parquet/*.parquet').fetch(n_rows=int(10))
+# ## Lazy
 
-new_path = 'test_result.parquet/*.parquet'
+lf = pl.scan_parquet(scan_path, n_rows=1000)
+lf.schema
 
-f"{pl.scan_parquet(new_path).select(pl.count()).collect().item():,} rows"
+# ### Collect
 
-pl.scan_parquet('test_result.parquet/*.parquet').limit(10).fetch(n_rows=10)
-
-pl.scan_parquet('test_result.parquet/*.parquet', n_rows=10).limit(10).collect()
-
-f = pl.scan_parquet('test_result.parquet/*.parquet', n_rows=100).limit(10)
-f.show_graph()
-
-pl.scan_parquet('test_result.parquet/*.parquet', n_rows=1000000000).limit(10).collect(streaming=True)
-#pl.scan_parquet('test_result.parquet/*.parquet', n_rows=100).limit(10).collect(streaming=True)
-
-head_df
-
-pl.read_parquet('test_result.parquet', use_pyarrow=True).limit(10)
-
-# +
 # %%time
+lf.limit(5).collect()
 
-counts_df = (
-    pl
-    .scan_parquet('test_result.parquet/*.parquet')
-    .select('test_date', 'test_result')
-    .filter(pl.col('test_date') > pd.Timestamp('2021-01-01'))
-    .filter(pl.col('test_result') == 'P')
-    .groupby(pl.col('test_date').dt.weekday()).count()
-    .collect()
-)
-# -
-
-counts_df
-
-filters=[('test_date', '>=', pd.Timestamp('2021-01-01')),
-         ('test_result', "==", "P"),
-        ],
-
-pl.read_parquet('test_result.parquet/*.parquet',
-                #use_pyarrow=True,
-                pyarrow_options = {'filters':filters},
-                #n_rows=10,
-                columns=['test_date', 'test_result'],
-               )\
-.groupby(pl.col('test_date').dt.weekday()).count()
-
-# +
 # %%time
+# Streaming is faster
+lf.limit(5).collect(streaming=True)
 
-counts_df = (
-    pl.read_parquet('test_result.parquet',
-                    use_pyarrow=True,
-                    pyarrow_options = {'filters':[('test_date', '>=', pd.Timestamp('2021-01-01')),
-                                                  ('test_result', "==", "P"),
-                                                 ],},
-                    columns=['test_date', 'test_result'],
-                   )
-    .groupby(pl.col('test_date').dt.weekday()).count()
-)
-# -
+# ### Fetch
 
-counts_df
-
-# +
 # %%time
+lf.fetch(n_rows=5).limit(5)
 
-counts_df = (
-    pl
-    .read_parquet('test_result.parquet/*.parquet')
-    .select('test_date', 'test_result')
-    .filter(pl.col('test_date') > pd.Timestamp('2021-01-01'))
-    .filter(pl.col('test_result') == 'P')
-    .groupby(pl.col('test_date').dt.weekday()).count()
-    .collect()
-)
-# -
+# %%time
+lf.limit(5).fetch(n_rows=5)
+
+# %%time
+lf.fetch(streaming=True).limit(5)
+
+# %%time
+# More speed!
+lf.limit(5).fetch(streaming=True)
+
+# ## Issue report examples
+
+# %%time
+# OOM
+# pl.scan_parquet(scan_path).limit(5).collect()
+
+# %%time
+pl.scan_parquet(scan_path, n_rows=100).limit(5).collect()
+
+# %%time
+pl.scan_parquet(scan_path, n_rows=100).limit(5).collect(streaming=True)
+
+# %%time
+pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
+
+# %%time
+# OOM
+# pl.scan_parquet(scan_path).limit(5).collect(streaming=True)
+
+# %%time
+# OOM
+# pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect()
+
+# ## OOM errors with scan_parquet > limit > collect
+
+# I'm getting to grips with Polars, working towards a talk with @ianozsvald, using the UK MOT vehicle test dataset (~635m rows, 854 partitions on disk, dataset explained [here](https://github.com/pola-rs/polars/issues/8925)).
+#
+# When prototyping code with Pandas, Dask or PySpark I would often use `.head()` or `.limit()`,
+# in order to eyeball data at different stages in a method chained process.
+# With Dask & PySpark I usually expect to be able to do this with large data, without issue.
+# With Polars, I'm finding that I'm getting bitten by OOM errors, and am trying to understand why.
+#
+# I started with
+#
+# `pl.scan_parquet(path).limit(5).collect()` - results in OOM
+#
+# Then I tried
+#
+# `pl.scan_parquet(path, n_rows=100).limit(5).collect()` - completes in 1.9s
+#
+# Having discovered streaming, I found that to be much faster
+#
+# `pl.scan_parquet(path, n_rows=100).limit(5).collect(streaming=True)` - completes in 85ms
+#
+# I then tried increasing n_rows on scan, eventually reaching a number larger than the row count of our dataset
+#
+# `pl.scan_parquet(path, n_rows=1000000000).limit(5).collect(streaming=True)` - completes in 110ms
+#
+# But without passing n_rows
+#
+# `pl.scan_parquet(path).limit(5).collect(streaming=True)` - results in OOM
+#
+# For completeness
+#
+# `pl.scan_parquet(path, n_rows=1000000000).limit(5).collect()` - results in OOM
+#
+# This raises a few questions:
+#
+# * Is OOM error expected with (large) `LazyFrame.limit(5)` ?
+# * Why would I not want to use `streaming=True` ? (I'm aware that the functionality behind this may be incomplete)
+# * Why does scanning n_rows larger than my dataset prevent OOM error in conjunction with `streaming=True` ?
+# * Are there any plans for a `use_pyarrow` option to `scan_parquet`, as with `read_parquet`?
+#
+# I have discovered `LazyFrame.fetch()` and can see how that would be useful. I'm also aware that `df.limit` is an alias to `df.head`.
+
+pl.show_versions()
 
 
