@@ -77,10 +77,16 @@ READ:
 
 * https://pola-rs.github.io/polars-book/user-guide/migration/pandas/#selecting-data (pandas migration)
 * https://pola-rs.github.io/polars-book/user-guide/expressions/user-defined-functions/#to-map-or-to-apply map/apply
+* https://www.howmanyleft.co.uk/family/volvo_v50#newreg 
+* https://docs.google.com/document/d/17W42zUwbdjyINY9NagrN84mzBWuXzUmbFuzMtL-ZUgE/edit# our collaboration doc
+* https://discord.com/channels/908022250106667068/911186243465904178 
 
 # ISSUES Opened
 
 ## Polars
+
+* https://github.com/pola-rs/polars/issues/9001
+  * Ritchie thinks that the limit should always be pushed down
 
 * https://github.com/pola-rs/polars/issues/8933 I want value_counts on lazyframe
   * "The groupby().agg(pl.count()) version should be preferred as that would hit the heavily optimized groupby branches. Whereas the value_counts expression can be used in any context and together with other expressions so we have to be more conservative with taking resources on that one." maybe another angle to explore?
