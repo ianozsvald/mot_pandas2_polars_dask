@@ -89,6 +89,7 @@ mot_pandas2_polars_dask$ bash scripts/3_decompress_data.sh # giving 66 files in 
 # run convert_csv_to_parquet_with_dask.ipynb
 # it generates ./test_result.parquet and ./item.parquet
 # run subselect_all_tests_to_few_years_polars.ipynb
+# NOTE BUG in subselect_ if does >2021,1,1 query losing circa 600 passing tests on 2022-01-01
 # which generates ./test_result_2021on.parquet
 
 ```
