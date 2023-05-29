@@ -14,6 +14,7 @@
 # ---
 
 import polars as pl
+import pyarrow.dataset as ds
 
 # 635m row dataset
 scan_path = '../../test_result.parquet/*.parquet'
@@ -31,6 +32,9 @@ df.schema
 # ## Lazy
 
 lf = pl.scan_parquet(scan_path, n_rows=1000)
+lf.schema
+
+lf = pl.scan_pyarrow_dataset(ds.dataset('../../test_result.parquet', format="parquet"))
 lf.schema
 
 # ### Collect

@@ -22,22 +22,18 @@ spark = SparkSession \
     .appName("Python Spark SQL basic example") \
     .getOrCreate()
 
-df = spark.read.options(datetimeRebaseMode="LEGACY").parquet('test_result.parquet')
+df = spark.read.parquet('../../test_result.parquet')
 df.dtypes
+
+df.rdd.getNumPartitions()
 
 df.limit(10).show()
 
-df.write.parquet('test_result_pyspark.parquet', mode='overwrite')
-
-df.drop('test_date', 'first_use_date').limit(10).toPandas()
-
-df.select('test_date', 'first_use_date').limit(10).toPandas()
-
 # +
 dfp = (
-    df.select(psf.unix_timestamp(psf.col('test_date')).alias('test_date'),
-              psf.unix_timestamp(psf.col('first_use_date')).alias('first_use_date'),
-             )
+    df.withColumns({'test_date': psf.unix_timestamp(psf.col('test_date')),
+                    'first_use_date': psf.unix_timestamp(psf.col('first_use_date')),
+                   })
     .limit(10)
     .toPandas()
 )
