@@ -13,16 +13,13 @@
 #     name: python3
 # ---
 
-from pyspark.sql import SparkSession
-import pyspark.sql.functions as psf
 import pandas as pd
+import pyspark.sql.functions as psf
+from pyspark.sql import SparkSession
 
-spark = SparkSession \
-    .builder \
-    .appName("Python Spark SQL basic example") \
-    .getOrCreate()
+spark = SparkSession.builder.appName("PySpark limit issue test").getOrCreate()
 
-df = spark.read.parquet('../../test_result.parquet')
+df = spark.read.parquet("../../test_result.parquet")
 df.dtypes
 
 df.rdd.getNumPartitions()
@@ -31,17 +28,17 @@ df.limit(10).show()
 
 # +
 dfp = (
-    df.withColumns({'test_date': psf.unix_timestamp(psf.col('test_date')),
-                    'first_use_date': psf.unix_timestamp(psf.col('first_use_date')),
-                   })
+    df.withColumns(
+        {
+            "test_date": psf.unix_timestamp(psf.col("test_date")),
+            "first_use_date": psf.unix_timestamp(psf.col("first_use_date")),
+        }
+    )
     .limit(10)
     .toPandas()
 )
 
-dfp['test_date'] = pd.to_datetime(dfp['test_date'], unit='s')
-dfp['first_use_date'] = pd.to_datetime(dfp['first_use_date'], unit='s')
+dfp["test_date"] = pd.to_datetime(dfp["test_date"], unit="s")
+dfp["first_use_date"] = pd.to_datetime(dfp["first_use_date"], unit="s")
 dfp.info()
 dfp.head()
-# -
-
-

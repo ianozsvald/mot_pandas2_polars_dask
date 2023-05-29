@@ -29,11 +29,9 @@ import pyarrow.dataset as ds
 
 # Doesn't work with sink_parquet
 # PanicException: sink_parquet not yet supported in standard engine. Use 'collect().write_parquet()'
-df = pl.scan_pyarrow_dataset(ds.dataset('../../test_result.parquet', format="parquet"))
+df = pl.scan_pyarrow_dataset(ds.dataset("../../test_result.parquet", format="parquet"))
 df.schema
 
 df.limit(10).collect(streaming=True)
 
-df.sink_parquet('polars_test.parquet')
-
-
+df.sink_parquet("polars_test.parquet")
