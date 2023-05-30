@@ -52,20 +52,16 @@ lf.limit(5).collect(streaming=True)
 
 # ### Fetch
 
-# + active=""
 # %%time
-# # OOMs
-# lf.fetch(n_rows=5).limit(5)
-# -
+# OOMs with scan_pyarrow_dataset
+lf.fetch(n_rows=5).limit(5)
 
 # %%time
 lf.limit(5).fetch(n_rows=5)
 
-# + active=""
 # %%time
-# # OOMs
-# lf.fetch(streaming=True).limit(5)
-# -
+# OOMs with scan_pyarrow_dataset
+lf.fetch(streaming=True).limit(5)
 
 # %%time
 # More speed!
@@ -74,22 +70,24 @@ lf.limit(5).fetch(streaming=True)
 # ## Issue report examples
 
 # %%time
-# OOM
-# pl.scan_parquet(scan_path).limit(5).collect()
+# OOMs No More :-)
+pl.scan_parquet(scan_path).limit(5).collect()
 
 # %%time
 pl.scan_parquet(scan_path, n_rows=100).limit(5).collect()
 
 # %%time
+# Slow, but no OOM
 pl.scan_parquet(scan_path, n_rows=100).limit(5).collect(streaming=True)
 
 # %%time
-pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
+# OOMs
+# pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
 
 # %%time
-# OOM
-# pl.scan_parquet(scan_path).limit(5).collect(streaming=True)
+# OOMs no more :-)
+pl.scan_parquet(scan_path).limit(5).collect(streaming=True)
 
 # %%time
-# OOM
+# OOMs
 # pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect()
