@@ -15,6 +15,4 @@
 
 import dask.dataframe as dd
 
-dd.read_parquet('../../test_result.parquet/', engine='pyarrow').head(10)
-
-
+dd.read_parquet("../../test_result.parquet/", engine="pyarrow").head(10)
