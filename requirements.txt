@@ -1,5 +1,5 @@
 bokeh
-black
+black[jupyter]
 bottleneck
 dask[complete]
 python-snappy

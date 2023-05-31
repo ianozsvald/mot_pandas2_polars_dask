@@ -49,14 +49,20 @@ fuel_type_df = (
 )
 
 fuel_type_df.head()
-# -
 
-ax = (
-    fuel_type_df.loc[2006:, ["PE", "DI", "HY", "EL"]]
-    .div(1000000)
-    .reset_index()
-    .plot.bar(figsize=(12, 6), x="Year", stacked=True, title="Car Counts by Fuel Type")
+# +
+import matplotlib.pyplot as plt
+from simpler_mpl import set_commas, set_common_mpl_styles
+
+fig, ax = plt.subplots(constrained_layout=True, figsize=(8, 6))
+
+fuel_type_df.loc[2006:, ["PE", "DI", "HY", "EL"]].div(1000000).reset_index().plot.bar(
+    x="Year", stacked=True, title="Car Counts by Fuel Type", ax=ax
 )
+
 ax.set_ylabel("Count (million)")
+set_common_mpl_styles(ax=ax)
+plt.xticks(rotation=-30);
+# -
 
 
