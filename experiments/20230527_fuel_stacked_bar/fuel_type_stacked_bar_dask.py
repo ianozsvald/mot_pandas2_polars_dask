@@ -22,6 +22,7 @@ client
 
 # +
 # Naive method ~3GB
+# 51s
 
 fuel_type_ddf = (
     dd.read_parquet(
@@ -41,12 +42,14 @@ progress(fuel_type_ddf)
 
 # +
 # PyArrow optimised method ~1.7GB
+# 29s
+# Less RAM, less time
 
 fuel_type_ddf = (
     dd.read_parquet(
         "../../test_result.parquet",
-        columns=["test_result", "test_date", "fuel_type"],
         dtype_backend="pyarrow",
+        columns=["test_result", "test_date", "fuel_type"],
         filters=[("test_result", "==", "P")],
     )
     .replace({"fuel_type": {"Hybrid Electric (Clean)": "HY", "Electric": "EL"}})
@@ -78,3 +81,5 @@ ax = (
     .plot.bar(figsize=(12, 6), x="Year", stacked=True, title="Car Counts by Fuel Type")
 )
 ax.set_ylabel("Count (million)")
+
+

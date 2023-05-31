@@ -58,3 +58,5 @@ ax = (
     .plot.bar(figsize=(12, 6), x="Year", stacked=True, title="Car Counts by Fuel Type")
 )
 ax.set_ylabel("Count (million)")
+
+
