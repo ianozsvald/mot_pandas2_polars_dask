@@ -95,8 +95,11 @@ result = (
 )
 result[:3]
 
-# %%time
+# +
 # note collect(streaming=True) same result
+# -
+
+# %%time
 result = (
     dfple.lazy()
     .filter(pl.col("cylinder_capacity").is_not_null())
@@ -111,6 +114,7 @@ result = (
     .sort(by="median")
     .collect()
 )
+
 result[:3]
 
 result.filter(pl.col("make") == "ROLLS ROYCE")
