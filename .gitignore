@@ -1,9 +1,11 @@
 *.swp
+test_result_sorted.parquet/
 data
 item.parquet
 test_result.parquet
 test_result_2018on.parquet
 test_result_2021on.parquet
+experiments/ian_scratch
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
