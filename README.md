@@ -1,3 +1,17 @@
+# PyDataLondon 2023 & ODSC 2023 talk on "Pandas 2, Polars or Dask"
+
+Giles Weaver (https://www.linkedin.com/in/gilesweaver/) and I (https://www.linkedin.com/in/ianozsvald/) have written a talk comparing these 3 popular dataframe tools on a "slightly larger than RAM" data data. This repo contains the source used in the talks - this is a research repo, _it isn't aimed at you_, it is aimed at us, but you're welcome to look through the source.
+
+The final presentations are here:
+
+* https://speakerdeck.com/ianozsvald/pandas-2-polars-and-dask-pydatalondon-2023
+
+On my newsletter (https://notanumber.email/) I've recently written on Polars (https://buttondown.email/NotANumber/archive/you-might-want-to-pay-attention-to-polars-our/) and the next issue should have more information on Pandas 2, Polars and Dask.
+
+If you want to follow the following - the setup instructions are at the bottom, the Notebooks show most of our investigations, there's a couple of text files with our observations and notes.
+
+**No pull requests please** this is just our researh repo for these conferences, we're unlikely to touch this after.
+
 
 # `experiments/`
 
