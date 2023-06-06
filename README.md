@@ -4,7 +4,8 @@ Giles Weaver (https://www.linkedin.com/in/gilesweaver/) and I (https://www.linke
 
 The final presentations are here:
 
-* https://speakerdeck.com/ianozsvald/pandas-2-polars-and-dask-pydatalondon-2023
+* https://speakerdeck.com/ianozsvald/pandas-2-polars-and-dask-pydatalondon-2023 (PyDataLondon 2023)
+* https://speakerdeck.com/ianozsvald/odsc-pandas-2-dask-or-polars-quickly-tackling-larger-data-on-a-single-machine (ODSC 2023 - added a couple of extra slides)
 
 On my newsletter (https://notanumber.email/) I've recently written on Polars (https://buttondown.email/NotANumber/archive/you-might-want-to-pay-attention-to-polars-our/) and the next issue should have more information on Pandas 2, Polars and Dask.
 
