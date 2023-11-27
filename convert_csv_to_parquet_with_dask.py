@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -17,22 +17,7 @@
 # * https://www.data.gov.uk/dataset/e3939ef8-30c7-4ca8-9c7c-ad9475cc9b2f/anonymised-mot-tests-and-results
 # * https://www.gov.uk/government/news/mot-changes-20-may-2018
 
-# #### Data separator cleanup code
-
-# + language="bash" active=""
-# # This identifies the lines with extra separators
-# # We can probably fix these with sed
-#
-# for f in data/test_result_*.txt
-#     do echo "Processing $f ..."
-#     awk -F"|" 'NF > 14 {print $0}' < $f
-#     done
-
-# + magic_args="   " language="bash" active=""
-# sed -i -e 's/TOYOTA|Estima |||/TOYOTA|Estima II|/g' test_result_2015.txt
-# sed -i -e 's/TOYOTA|Estima |||/TOYOTA|Estima II|/g' test_result_2016.txt
-# -
-
+# +
 from dask.distributed import Client, wait
 from distributed import progress
 from glob import glob
@@ -40,22 +25,24 @@ from operator import itemgetter
 import dask.dataframe as dd
 import csv
 import pandas as pd
-
 import dask
+
 dask.__version__
+# -
 
 client = Client()
 client
+
+# ## Find local MOT data files
+#
+# Sniff csv dialect for all files (dialect varies between files)
 
 # +
 txt_files = glob('data/test_*.txt')
 csv_files = glob('data/unzipped/**/*.csv', recursive=True)
 
 files = txt_files + csv_files
-len(files)
-
-
-# -
+print(f'Files found: {len(files)}')
 
 def sniff_dialect(file):
     with open(file) as csvfile:
@@ -64,8 +51,6 @@ def sniff_dialect(file):
         dialect_info['file'] = file
     return dialect_info
 
-
-# +
 dialects = [sniff_dialect(file) for file in files]
 
 csv_info_df = (
@@ -79,17 +64,20 @@ csv_info_df = (
 csv_info_df
 # -
 
-csv_info_df.lineterminator.describe()
+csv_info_df[['lineterminator', 'skipinitialspace', 'delimiter']].describe()
 
-csv_info_df.skipinitialspace.describe()
+csv_info_df.delimiter.value_counts()
 
-csv_info_df.delimiter.unique()
+# +
+# MOT result files
 
 results_files_df = csv_info_df[csv_info_df.file.str.contains('result')]
 results_files_df
 
 
-# ## Results
+# -
+
+# ## MOT Test Results
 
 # +
 def read_results(file, sep):
@@ -104,26 +92,22 @@ def read_results(file, sep):
                     )
     return df
 
+# Alternative methods for converting datetimes to correct dtypes
 def parse_dates_pd(df):
     df['test_date'] = pd.to_datetime(df['test_date'], format='ISO8601', errors='coerce')
     df['first_use_date'] = pd.to_datetime(df['first_use_date'], format='ISO8601', errors='coerce')
     return df
 
 def parse_dates_dd(df):
-    df['test_date'] = dd.to_datetime(df['test_date'], format='ISO8601',
-                                     # utc=True,
-                                     errors='coerce')
-    df['first_use_date'] = dd.to_datetime(df['first_use_date'], format='ISO8601',
-                                          # utc=True,
-                                          errors='coerce')
+    df['test_date'] = dd.to_datetime(df['test_date'], format='ISO8601', errors='coerce')
+    df['first_use_date'] = dd.to_datetime(df['first_use_date'], format='ISO8601', errors='coerce')
     return df
 
 def make_dtypes_pyarrow(df):
     return df.convert_dtypes(dtype_backend='pyarrow')
 
 
-# -
-
+# +
 result_records = results_files_df[['file', 'delimiter']].to_records(index=False)
 ddfs = [read_results(file, sep) for file, sep in result_records]
 
@@ -136,6 +120,7 @@ ddf = (
 )
 
 ddf.dtypes
+# -
 
 f_result = (
     ddf
@@ -183,9 +168,10 @@ rover_df = ddf_result.query('vehicle_id == 1238787680').compute()
 
 rover_df
 
+# There is a known bad data point in this plot
 rover_df.set_index('test_date').test_mileage.plot(marker='.')
 
-# ## Items
+# ## MOT Test Result Items
 
 item_files_df = csv_info_df[csv_info_df.file.str.contains('item')]
 item_files_df
