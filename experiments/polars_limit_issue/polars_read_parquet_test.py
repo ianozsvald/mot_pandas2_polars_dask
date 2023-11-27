@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -52,16 +52,20 @@ lf.limit(5).collect(streaming=True)
 
 # ### Fetch
 
+# + active=""
 # %%time
-# OOMs with scan_pyarrow_dataset
-lf.fetch(n_rows=5).limit(5)
+# # OOMs with scan_pyarrow_dataset
+# lf.fetch(n_rows=5).limit(5)
+# -
 
 # %%time
 lf.limit(5).fetch(n_rows=5)
 
+# + active=""
 # %%time
-# OOMs with scan_pyarrow_dataset
-lf.fetch(streaming=True).limit(5)
+# # OOMs with scan_pyarrow_dataset
+# lf.fetch(streaming=True).limit(5)
+# -
 
 # %%time
 # More speed!
@@ -77,17 +81,19 @@ pl.scan_parquet(scan_path).limit(5).collect()
 pl.scan_parquet(scan_path, n_rows=100).limit(5).collect()
 
 # %%time
-# Slow, but no OOM
+# Now fast, no OOM
 pl.scan_parquet(scan_path, n_rows=100).limit(5).collect(streaming=True)
 
 # %%time
-# OOMs
-# pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
+# OOMs No More :-)
+pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect(streaming=True)
 
 # %%time
 # OOMs no more :-)
 pl.scan_parquet(scan_path).limit(5).collect(streaming=True)
 
 # %%time
-# OOMs
-# pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect()
+# OOMs No More :-)
+pl.scan_parquet(scan_path, n_rows=1000000000).limit(5).collect()
+
+
