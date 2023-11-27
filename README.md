@@ -83,6 +83,8 @@ Other docs:
 
 ## Main investigation
 
+__Update 202311__ I'm using `pydataglobal2023` for the second iteration of this talk, using the same install notes as below.
+
 The `pydatalondon2023` environment is for the main investigation including Pandas 2, Polars and Dask.
 
 ```
