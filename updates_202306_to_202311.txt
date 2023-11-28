@@ -1,0 +1,75 @@
+
+Slides to update 
+
+20230523_polars_groupby.ipynb - has query planning diagnostics that we hadn't used, could try these?
+
+PyArrow vs NumPy – which to use? 7
+timings from 20230522_pandas_exploration.ipynb - Pandas (arrow+numpy) now slower than before!
+
+Pandas+Arrow, query, Seaborn 8
+timings from 20230522_pandas_exploration.ipynb - also slower
+
+Polars – same query & Seaborn 10
+20230522_polars_exploration.ipynb - a bit faster
+
+Manual Query Planning 11
+20230522_pandas_exploration.ipynb - pandas 2x slower
+
+A more advanced query 12
+20230523_pandas_groupby.ipynb - UNK
+20230523_polars_groupby.ipynb - UNK
+
+Should I buy Volvo V50 – mileage? 14
+20230522_polars_exploration.ipynb
+(no update required)
+
+Resampling a timeseries 16
+20230523_polars_groupby.ipynb - UNK
+
+
+Scanning 640M rows of larger dataset 17 & 18
+20230523_polars_groupby.ipynb - UNK
+
+Vehicle ownership increases, Hybrids growing 19
+?
+
+dask vs polars 21
+?
+
+passat 22
+? i don't think we need to update plot
+
+dask vs polars 23
+? needs update
+
+issues 24
+needs refresh 
+
+arrow ram 26
+? needs refresh
+
+Fixes we expect:
+* groupby -> group_by
+* %load_ext ipython_memory_usage %imu_start  from #from cell_profiler import cell_profiler as cp %start_cell_profiler
+
+
+# 20230520_polars_queries.ipynb
+I seemed to be lacking data, the filter didn't give any results now!
+
+# 20230522_polars_exploration.ipynb
+'Pandas 2.1.3, Polars 0.19.17'
+Runs as before, 
+dfple = pl.read_parquet("../test_result_2021on.parquet")
+did cost 12GB now costs 22GB but Polars reports 11GB in both cases
+
+df_fuel = df_fuel.with_columns(
+    pl.col("first_use_date").dt.year().alias("first_use_year")
+).filter((pl.col("fuel_type").is_in({"PE", "DI"})))[
+    ["test_mileage", "first_use_year", "fuel_type"]
+]
+1.5ms not 14ms
+but otherwise timings looked similar
+
+# 20230522_pandas_exploration.ipynb
+
+it works but pandas gives some very different results.
