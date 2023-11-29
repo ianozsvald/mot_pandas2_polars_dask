@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -17,20 +17,18 @@ import polars as pl
 
 # %%time
 fuel_type_edf = (
-    pl.scan_parquet("../../test_result.parquet/*", low_memory=True)
+    pl.scan_parquet("../../test_result.parquet/*")
     .select(["test_result", "test_date", "fuel_type"])
     .filter(pl.col("test_result") == "P")
     .with_columns(
         pl.col("fuel_type")
-        .map_dict(
-            {"Hybrid Electric (Clean)": "HY", "Electric": "EL"}, default=pl.first()
-        )
+        .replace({"Hybrid Electric (Clean)": "HY", "Electric": "EL"}, default=pl.first())
         .cast(str),
         pl.col("test_date").dt.year().alias("Year"),
     )
-    .groupby(["Year", "fuel_type"])
+    .group_by(["Year", "fuel_type"])
     .agg(pl.col("test_result").count().alias("vehicle_count"))
-    .collect(streaming=True)
+    .collect(streaming=True) # streaming required to prevent OOM
 )
 
 # +

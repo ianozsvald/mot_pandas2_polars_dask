@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.15.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -14,7 +14,10 @@
 # ---
 
 # # Failed experiment
+#
 # (OOM - kernel dies unless filtering by date)
+#
+# 2023-11-27 - pandas memory usage seems to have improved. It is now possible to process at least ten years data (previously it was five) with 32GB RAM.
 
 import pandas as pd
 
@@ -28,7 +31,7 @@ fuel_type_df = (
         dtype_backend="pyarrow",
         filters=[
             ("test_result", "==", "P"),
-            ("test_date", ">=", pd.Timestamp("2018-01-01")),
+            ("test_date", ">=", pd.Timestamp("2012-01-01")),
         ],
     )
     .replace({"fuel_type": {"Hybrid Electric (Clean)": "HY", "Electric": "EL"}})
@@ -57,3 +60,5 @@ ax = (
     .plot.bar(figsize=(12, 6), x="Year", stacked=True, title="Car Counts by Fuel Type")
 )
 ax.set_ylabel("Count (million)")
+
+
