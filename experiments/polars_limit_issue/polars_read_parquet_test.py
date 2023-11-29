@@ -20,6 +20,8 @@
 import polars as pl
 import pyarrow.dataset as ds
 
+pl.show_versions()
+
 # 635m row dataset
 scan_path = "../../test_result.parquet/*.parquet"
 
