@@ -1,4 +1,9 @@
+*.png
+*.svg
 *.swp
+pyspark*.ipynb
+dask-scratch-space
+volvo_data_polars.parquet
 test_result_sorted.parquet/
 data
 item.parquet
