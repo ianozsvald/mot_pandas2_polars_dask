@@ -20,4 +20,4 @@ scalene
 humanfriendly
 scikit-learn
 lightgbm
-
+seaborn
