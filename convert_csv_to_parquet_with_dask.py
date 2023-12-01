@@ -26,9 +26,13 @@ import dask.dataframe as dd
 import csv
 import pandas as pd
 import dask
+import os
 
 dask.__version__
 # -
+
+assert os.path.exists('test_result.parquet') == False, "We must remove this folder before starting"
+assert os.path.exists('item.parquet') == False, "We must remove this folder before starting"
 
 client = Client()
 client
