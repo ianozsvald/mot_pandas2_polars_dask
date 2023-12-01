@@ -14,11 +14,51 @@
 # ---
 
 import dask.dataframe as dd
+import dask
 import pandas as pd
 from distributed import Client, progress, wait
 
 client = Client(n_workers=6)
 client
+
+parquet_path = "../../test_result.parquet/*"
+
+# ### Unoptimised for slides
+#
+# 2023-12-01 - 42.34s
+
+fuel_type_ddf = (
+    dd.read_parquet(parquet_path, dtype_backend="pyarrow")
+    .query('test_result == "P"')
+    .replace({"fuel_type": {"Hybrid Electric (Clean)": "HY",
+                            "Electric": "EL"}})
+    .assign(Year=lambda x: x.test_date.dt.year)
+    .groupby(["Year", "fuel_type"])
+    .agg({"test_result": "count"})
+    .rename(columns={"test_result": "vehicle_count"})
+    .compute()
+)
+
+# ### Optimised for slides
+#
+# 2023-12-01 - 23s
+
+fuel_type_ddf = (
+    dd.read_parquet(parquet_path,
+                    dtype_backend="pyarrow",
+                    columns=["test_result", "test_date", "fuel_type"],
+                    filters=[("test_result", "==", "P")],
+    )
+    .replace({"fuel_type": {"Hybrid Electric (Clean)": "HY",
+                            "Electric": "EL"}})
+    .assign(Year=lambda x: x.test_date.dt.year)
+    .groupby(["Year", "fuel_type"])
+    .agg({"test_result": "count"})
+    .rename(columns={"test_result": "vehicle_count"})
+    .compute()
+)
+
+# ### Variants with progress bars
 
 # +
 # Naive method ~3GB
@@ -68,6 +108,15 @@ fuel_type_ddf = (
 )
 
 progress(fuel_type_ddf)
+# -
+
+# ### Shuffle method performance testing
+
+# No real difference between these
+dask.config.set({"dataframe.shuffle.method": "p2p"})
+#dask.config.set({"dataframe.shuffle.method": "tasks"})
+
+del fuel_type_ddf
 
 # +
 # PyArrow optimised method ~1.7GB

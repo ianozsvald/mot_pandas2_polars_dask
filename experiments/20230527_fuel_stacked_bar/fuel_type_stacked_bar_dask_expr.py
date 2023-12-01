@@ -21,18 +21,36 @@ from distributed import Client, progress, wait
 client = Client(n_workers=6)
 client
 
+parquet_path = "../../test_result.parquet/*"
+
+# ### For slide deck
+#
+# 2023-12-01 -- 26.5s
+
+ddf = dx.read_parquet(parquet_path, dtype_backend="pyarrow",)
+fuel_type_ddf = (
+    ddf[(ddf['test_result'] == "P")]
+    #.query('test_result == "P"') # not in dask-expr 0.2.4
+    .replace({"fuel_type": {"Hybrid Electric (Clean)": "HY",
+                            "Electric": "EL"}})
+    .assign(Year=lambda x: x.test_date.dt.year)
+    .groupby(["Year", "fuel_type"])
+    .agg({"test_result": "count"})
+    .rename(columns={"test_result": "vehicle_count"})
+    .compute()
+)
+
+# ### Testing
+
 # +
 # 2023-11
 # 3.11.5 wih dask-expr 26.7s
 
-ddf = dx.read_parquet(
-    "../../test_result.parquet",
-    dtype_backend="pyarrow",
+ddf = dx.read_parquet(parquet_path, dtype_backend="pyarrow",)
 
-    # Workaround for lack of .query support in dask-expr
-    # This partially defeats the purpose of testing dask-expr
-    # filters=[("test_result", "==", "P")],
-)
+# Workaround for lack of .query support in dask-expr
+# This partially defeats the purpose of testing dask-expr
+# filters=[("test_result", "==", "P")],
 
 fuel_type_ddf = (
     ddf[(ddf['test_result'] == "P")]

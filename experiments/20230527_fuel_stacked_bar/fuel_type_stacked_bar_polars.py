@@ -15,14 +15,15 @@
 
 import polars as pl
 
-# %%time
+parquet_path = "../../test_result.parquet/*"
+
 fuel_type_edf = (
-    pl.scan_parquet("../../test_result.parquet/*")
-    .select(["test_result", "test_date", "fuel_type"])
+    pl.scan_parquet(parquet_path)
     .filter(pl.col("test_result") == "P")
     .with_columns(
         pl.col("fuel_type")
-        .replace({"Hybrid Electric (Clean)": "HY", "Electric": "EL"}, default=pl.first())
+        .replace({"Hybrid Electric (Clean)": "HY", "Electric": "EL"},
+                 default=pl.first())
         .cast(str),
         pl.col("test_date").dt.year().alias("Year"),
     )
@@ -30,6 +31,25 @@ fuel_type_edf = (
     .agg(pl.col("test_result").count().alias("vehicle_count"))
     .collect(streaming=True) # streaming required to prevent OOM
 )
+
+fuel_type_ldf = (
+    pl.scan_parquet(parquet_path)
+    .select(["test_result", "test_date", "fuel_type"])
+    .filter(pl.col("test_result") == "P")
+    .with_columns(
+        pl.col("fuel_type")
+        .replace({"Hybrid Electric (Clean)": "HY", "Electric": "EL"},
+                 default=pl.first())
+        .cast(str),
+        pl.col("test_date").dt.year().alias("Year"),
+    )
+    .group_by(["Year", "fuel_type"])
+    .agg(pl.col("test_result").count().alias("vehicle_count"))
+)
+
+print(fuel_type_ldf.explain())
+
+fuel_type_ldf.show_graph()
 
 # +
 fuel_type_df = (
