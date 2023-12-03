@@ -101,8 +101,9 @@ From root (where README is) run:
 mot_pandas2_polars_dask$ python scripts/1_link_scraper.py 
 # makes a ./data/ folder with 2 csv file
 mot_pandas2_polars_dask$ bash scripts/2_acquire_data.sh 
-# downloads all zip/tar.gz files, it took 2 hours for Ian leaving 41 files in total in ./data/
-mot_pandas2_polars_dask$ bash scripts/3_decompress_data.sh # giving 66 files in ./data/
+# downloads all zip/tar.gz files, it took 2 hours for Ian leaving 40 files in total in ./data/ (`ls -lA | wc` minus one as total is a summary)
+mot_pandas2_polars_dask$ bash scripts/3_decompress_data.sh # giving 65 files in ./data/ (`ls -lA | wc` minus one as the total is a summary)
+bash scripts/4_fix_bad_data.sh 
 # run convert_csv_to_parquet_with_dask.ipynb
 # it generates ./test_result.parquet and ./item.parquet
 # run subselect_all_tests_to_few_years_polars.ipynb
