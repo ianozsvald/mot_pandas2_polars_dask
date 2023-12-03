@@ -15,13 +15,14 @@
 import polars as pl
 import pandas as pd
 import os
-os.chdir("../..")
 
-# %%time
+parquet_path = "../../test_result.parquet/*"
+
 edf = (
-    pl.scan_parquet("test_result.parquet/*")
-    .filter(pl.col("make").is_in(["VOLVO", "VOLKSWAGEN"]))
-    .filter(pl.col("model").is_in(["V50", "PASSAT"]))
+    pl.scan_parquet(parquet_path)
+    .filter(pl.col("make").is_in(["VOLVO", "VOLKSWAGEN"]) &
+            pl.col("model").is_in(["V50", "PASSAT"])
+           )
     .group_by("vehicle_id")
     .agg(
         pl.col(
@@ -40,7 +41,7 @@ len(edf)
 edf.schema
 
 ldf = (
-    pl.scan_parquet("test_result.parquet/*")
+    pl.scan_parquet(parquet_path)
     .filter(pl.col("make").is_in(["VOLVO", "VOLKSWAGEN"]))
     .filter(pl.col("model").is_in(["V50", "PASSAT"]))
     .group_by("vehicle_id")
@@ -136,4 +137,7 @@ plt.xticks(rotation=-30)
 set_common_mpl_styles(
     ax, title="Passat survival since registration", ymin=0, xlabel="Lifetime (years)" #ylabel="Passing Tests per Week"
 )
+
+# -
+
 

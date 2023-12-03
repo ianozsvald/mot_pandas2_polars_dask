@@ -25,18 +25,94 @@ from distributed import Client, progress, wait
 
 dask.config.set(temporary_directory=os.getcwd())
 #dask.config.set(temporary_directory='/media/ian/data/mot_pandas2_polars_dask/data')
-
-# +
-os.chdir("../..")
+# -
 
 client = Client(n_workers=16)
 client
-# -
 
-# 2m15s Giles
+parquet_path = "../../test_result.parquet"
+
+# Semi Naive implementation
+# 7m6s Giles
 vehicle_summary_ddf = (
     dd.read_parquet(
-        path="test_result.parquet",
+        path=parquet_path,
+        dtype_backend="pyarrow",
+        columns=[
+            "vehicle_id",
+            "make",
+            "model",
+            "fuel_type",
+            "cylinder_capacity",
+            "first_use_date",
+            "test_date",
+            "test_mileage",
+        ],
+        filters=[
+            ("make", "in", ["VOLVO", "VOLKSWAGEN"]),
+            ("model", "in", ["V50", "PASSAT"]),
+        ],
+    )
+    .groupby("vehicle_id").agg(
+        {
+            "make": "last",
+            "model": "last",
+            "fuel_type": "last",
+            "cylinder_capacity": "last",
+            "first_use_date": "last",
+            "test_date": "max",
+            "test_mileage": "max",
+        },
+    )
+    .persist()
+)
+progress(vehicle_summary_ddf)
+
+# Faster implementation with persist (timings for cell and progress ~= wall clock)
+# 38.2s with persist
+# 50.8s with computer
+vehicle_summary_ddf = (
+    dd.read_parquet(
+        path=parquet_path,
+        dtype_backend="pyarrow",
+        columns=[
+            "vehicle_id",
+            "make",
+            "model",
+            "fuel_type",
+            "cylinder_capacity",
+            "first_use_date",
+            "test_date",
+            "test_mileage",
+        ],
+        filters=[
+            ("make", "in", ["VOLVO", "VOLKSWAGEN"]),
+            ("model", "in", ["V50", "PASSAT"]),
+        ],
+    )
+    .set_index('vehicle_id', npartitions=96, shuffle='tasks')
+    .groupby("vehicle_id").agg(
+        {
+            "make": "last",
+            "model": "last",
+            "fuel_type": "last",
+            "cylinder_capacity": "last",
+            "first_use_date": "last",
+            "test_date": "max",
+            "test_mileage": "max",
+        },
+        shuffle='tasks',
+    )
+    #.persist()
+    .compute()
+)
+# progress(vehicle_summary_ddf)
+
+# Experimental implementation
+# 2m11s Giles
+vehicle_summary_ddf = (
+    dd.read_parquet(
+        path=parquet_path,
         dtype_backend="pyarrow",
         columns=[
             "vehicle_id",
@@ -112,7 +188,7 @@ def add_lifetime(df):
 # 2023-11 3m9s
 vehicle_summary_ddf = (
     dd.read_parquet(
-        path="test_result.parquet",
+        path=parquet_path,
         dtype_backend='pyarrow',
         filters=[("make", "in", ["VOLVO", "VOLKSWAGEN"])],
         columns=['vehicle_id', 'make', 'model', 'fuel_type', 'cylinder_capacity', 'first_use_date', 'test_date', 'test_mileage'],
@@ -131,7 +207,7 @@ progress(vehicle_summary_ddf)
 # 29m18s Giles, 34min to 854/854 aggregate-chunks and 120/123 agg-combines,then it seemlingly got stuck
 # 2023-11 7m20s
 vehicle_summary_ddf = (
-    dd.read_parquet(path="test_result.parquet", dtype_backend="pyarrow")
+    dd.read_parquet(path=parquet_path, dtype_backend="pyarrow")
     .query(
         'make in ["VOLVO", "VOLKSWAGEN", "ROVER"] & model in ["V50", "PASSAT", "200", "200 VI"]'
     )
@@ -146,7 +222,7 @@ progress(vehicle_summary_ddf)
 # 2023-11 2m48s
 vehicle_summary_ddf = (
     dd.read_parquet(
-        path="test_result_sorted.parquet",
+        path=parquet_path,
         dtype_backend="pyarrow",
         index="vehicle_id",
         calculate_divisions=True,
@@ -164,7 +240,7 @@ progress(vehicle_summary_ddf)
 # 11m02s Giles
 # 2023-11 2m26s
 vehicle_summary_ddf = (
-    dd.read_parquet(path="test_result.parquet", dtype_backend="pyarrow")
+    dd.read_parquet(path=parquet_path, dtype_backend="pyarrow")
     .query(
         'make in ["VOLVO", "VOLKSWAGEN", "ROVER"] & model in ["V50", "PASSAT", "200", "200 VI"]'
     )
@@ -179,7 +255,7 @@ progress(vehicle_summary_ddf)
 # 2023-11 50s
 vehicle_summary_ddf = (
     dd.read_parquet(
-        path="test_result_sorted.parquet",
+        path=parquet_path,
         dtype_backend="pyarrow",
         index="vehicle_id",
         calculate_divisions=True,
@@ -198,7 +274,7 @@ progress(vehicle_summary_ddf)
 # 2023-11 42s
 vehicle_summary_ddf = (
     dd.read_parquet(
-        path="test_result_sorted.parquet",
+        path=parquet_path,
         dtype_backend="pyarrow",
         index="vehicle_id",
         calculate_divisions=True,
@@ -226,7 +302,7 @@ progress(vehicle_summary_ddf)
 # Lifetime
 vehicle_summary_ddf = (
     dd.read_parquet(
-        path="test_result_sorted.parquet",
+        path=parquet_path,
         dtype_backend="pyarrow",
         index="vehicle_id",
         calculate_divisions=True,
@@ -381,5 +457,3 @@ ax.set_xlim(5, 20)
 ax.set_ylim(0, 300000)
 
 pd.concat([passats_df, v50s_df]).groupby(["make", "surviving"]).model.count()
-
-
